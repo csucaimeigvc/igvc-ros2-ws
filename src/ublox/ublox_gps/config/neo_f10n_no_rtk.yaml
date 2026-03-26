@@ -1,0 +1,38 @@
+ublox_gps_node:
+  ros__parameters:
+    device: /dev/ttyNEO_F10N
+    frame_id: gps
+    rate: 10                    # 10 Hz update rate
+    nav_rate: 1                 # 1 Hz navigation rate
+    dynamic_model: automotive   # Correct for vehicle applications
+
+    uart1:
+      baudrate: 38400          # Match the baudrate set in u-center
+      in: 0x0001              # UBX protocol input
+      out: 0x0001             # UBX protocol output
+
+    gnss:
+      gps: true               # Enable GPS
+      galileo: true           # Enable Galileo
+      beidou: true            # Enable BeiDou
+      glonass: true           # Enable GLONASS
+      sbas: true              # Enable SBAS for better accuracy
+
+    inf:
+      all: false              # Disable u-blox diagnostic messages
+
+    publish:
+      all: false
+      nav: true               # Enable navigation messages
+      nav_pvt: true           # Position, velocity, time
+      nav_velned: true        # Velocity in NED frame
+      nav_sat: true           # Satellite information
+      nav_status: true        # Navigation status
+      nav_dop: true           # Dilution of precision
+      nav_timeutc: true       # UTC time
+      nav_timegps: true       # GPS time
+
+    config_on_startup: false  # Disable auto-configuration since we configured in u-center
+    save:
+      mask: 3103              # Save I/O, message, GNSS, and navigation config
+      device: 4               # Save to flash memory

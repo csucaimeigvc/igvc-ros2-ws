@@ -1,0 +1,46 @@
+NMEA GPS Driver Setup Summary
+============================
+
+1. Initial Setup and Configuration
+--------------------------------
+- Checked serial port settings: stty -F /dev/ttyNEO_F10N -a
+- Verified symbolic link: /dev/ttyNEO_F10N -> ttyUSB0
+
+2. Baud Rate Configuration
+-------------------------
+- Initial baud rate: 9600
+- Changed to 38400: stty -F /dev/ttyUSB0 38400
+- Updated configuration files:
+  * src/ublox/ublox_gps/config/neo_f10n.yaml
+  * src/ublox/ublox_gps/config/neo_f10n_rover.yaml
+
+3. Launch File Creation
+----------------------
+Created: src/ublox/ublox_gps/launch/neo_f10n_nmea.launch.py
+- Port: /dev/ttyNEO_F10N
+- Baud rate: 38400
+- NMEA message types: RMC, GGA, GLL, VTG, etc.
+- Topic remappings for ROS 2
+
+4. Building and Installation
+---------------------------
+- Built package: colcon build --packages-select ublox_gps
+- Sourced setup files:
+  * /opt/ros/humble/setup.bash
+  * install/setup.bash
+
+5. Launching and Verification
+----------------------------
+- Launch command: ros2 launch ublox_gps neo_f10n_nmea.launch.py
+- Verified topics:
+  * /gps/fix
+  * /gps/vel
+  * /gps/time_reference
+- Confirmed valid GPS data with proper status and coordinates
+
+Key Points
+----------
+- Ensure all baud rates match (serial port, config files, launch file)
+- Need clear view of sky for GPS signal reception
+- Position covariance matrix shows uncertainty in measurements
+- Status 0 indicates valid fix, -1 indicates invalid fix 

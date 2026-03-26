@@ -1,0 +1,121 @@
+#include <avr/interrupt.h>
+
+const uint8_t LEFT_A_PIN = 2;
+const uint8_t LEFT_B_PIN = 3;
+const uint8_t RIGHT_A_PIN = 4;
+const uint8_t RIGHT_B_PIN = 5;
+const unsigned long REPORT_INTERVAL_MS = 20;
+
+volatile long leftCount = 0;
+volatile long rightCount = 0;
+volatile uint8_t leftState = 0;
+volatile uint8_t rightState = 0;
+
+// The Uno only has hardware interrupts on pins 2/3, so the right encoder uses
+// pin-change interrupts on pins 4/5.
+void updateQuadrature(volatile long& count, volatile uint8_t& lastState, uint8_t a, uint8_t b) {
+  uint8_t state = (a << 1) | b;
+  uint8_t transition = (lastState << 2) | state;
+
+  switch (transition) {
+    case 0b0001:
+    case 0b0111:
+    case 0b1110:
+    case 0b1000:
+      count++;
+      break;
+
+    case 0b0010:
+    case 0b0100:
+    case 0b1101:
+    case 0b1011:
+      count--;
+      break;
+  }
+
+  lastState = state;
+}
+
+void updateLeftEncoder() {
+  updateQuadrature(leftCount, leftState, digitalRead(LEFT_A_PIN), digitalRead(LEFT_B_PIN));
+}
+
+void updateRightEncoder() {
+  updateQuadrature(rightCount, rightState, digitalRead(RIGHT_A_PIN), digitalRead(RIGHT_B_PIN));
+}
+
+ISR(PCINT2_vect) {
+  updateRightEncoder();
+}
+
+void handleCommand(const String& command) {
+  if (command == "ping") {
+    Serial.println("pong");
+    return;
+  }
+
+  if (command == "zero") {
+    noInterrupts();
+    leftCount = 0;
+    rightCount = 0;
+    interrupts();
+    Serial.println("ok");
+    return;
+  }
+
+  Serial.print("unknown=");
+  Serial.println(command);
+}
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(LEFT_A_PIN, INPUT_PULLUP);
+  pinMode(LEFT_B_PIN, INPUT_PULLUP);
+  pinMode(RIGHT_A_PIN, INPUT_PULLUP);
+  pinMode(RIGHT_B_PIN, INPUT_PULLUP);
+
+  delay(10);
+  leftState = (digitalRead(LEFT_A_PIN) << 1) | digitalRead(LEFT_B_PIN);
+  rightState = (digitalRead(RIGHT_A_PIN) << 1) | digitalRead(RIGHT_B_PIN);
+
+  attachInterrupt(digitalPinToInterrupt(LEFT_A_PIN), updateLeftEncoder, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(LEFT_B_PIN), updateLeftEncoder, CHANGE);
+
+  PCICR |= (1 << PCIE2);
+  PCMSK2 |= (1 << PCINT20) | (1 << PCINT21);
+}
+
+void loop() {
+  static unsigned long lastReport = 0;
+
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+    if (command.length() > 0) {
+      handleCommand(command);
+    }
+  }
+
+  if (millis() - lastReport >= REPORT_INTERVAL_MS) {
+    noInterrupts();
+    long left = leftCount;
+    long right = rightCount;
+    uint8_t leftSnapshot = leftState;
+    uint8_t rightSnapshot = rightState;
+    interrupts();
+
+    Serial.print("t=");
+    Serial.print(millis());
+    Serial.print(",left=");
+    Serial.print(left);
+    Serial.print(",right=");
+    Serial.print(right);
+    Serial.print(",ls=");
+    Serial.print(leftSnapshot);
+    Serial.print(",rs=");
+    Serial.println(rightSnapshot);
+
+    lastReport = millis();
+  }
+}

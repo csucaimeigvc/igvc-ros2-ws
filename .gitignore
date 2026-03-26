@@ -1,0 +1,40 @@
+# Colcon / ROS 2 workspace
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs (if created under workspace)
+.venv/
+venv/
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local secrets / machine-specific (keep out of Git)
+.env
+.env.*
+!.env.example
+
+# Optional local overrides
+*.local.yaml
+*.local.yml
+
+# Caches / coverage
+.coverage
+htmlcov/

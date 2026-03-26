@@ -1,0 +1,15 @@
+encoder_bridge:
+  ros__parameters:
+    port: /dev/ttyARDUINO
+    baudrate: 115200
+    reconnect_interval_s: 2.0
+    wheel_radius_m: 0.127
+    track_width_m: 0.6
+    counts_per_revolution: 8192.0
+    gear_ratio: 1.0
+    left_sign: 1
+    right_sign: 1
+    odom_frame: odom
+    base_frame: base_link
+    publish_tf: false
+    legacy_single_encoder_is_left: true
