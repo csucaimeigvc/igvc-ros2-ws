@@ -3,6 +3,8 @@
 set -euo pipefail
 
 WS="$(cd "$(dirname "$0")/.." && pwd)"
+# Colcon setup scripts reference $COLCON_TRACE; with `set -u` it must be set.
+export COLCON_TRACE="${COLCON_TRACE:-}"
 # shellcheck source=/dev/null
 source "$WS/install/setup.bash"
 

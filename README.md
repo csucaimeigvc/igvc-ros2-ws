@@ -91,6 +91,15 @@ After laptop motor setup, flash on Jetson and plan Nav2 integration: [docs/JETSO
 | `src/ublox` | u-blox GPS driver stack |
 | `ping_pong` | Optional Arduino encoder sketch (legacy bridge path) |
 
+## Troubleshooting
+
+**`COLCON_TRACE: unbound variable` when sourcing `install/setup.bash`:** Your shell has `set -u` (nounset), often from `~/.bashrc`. Either define the variable once per session before sourcing the workspace, or only enable nounset after ROS setup:
+
+```bash
+export COLCON_TRACE=
+source install/setup.bash
+```
+
 ## License
 
 Per-package licenses are in each package’s `package.xml` / upstream files (e.g. BSD for `sllidar_ros2`, MIT for `igvc_robot`).
