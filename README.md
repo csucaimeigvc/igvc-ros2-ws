@@ -93,11 +93,21 @@ After laptop motor setup, flash on Jetson and plan Nav2 integration: [docs/JETSO
 
 ## Troubleshooting
 
-**`COLCON_TRACE: unbound variable` when sourcing `install/setup.bash`:** Your shell has `set -u` (nounset), often from `~/.bashrc`. Either define the variable once per session before sourcing the workspace, or only enable nounset after ROS setup:
+**`COLCON_TRACE`, `AMENT_TRACE_SETUP_FILES`, or other “unbound variable” when sourcing ROS:** Your shell has `set -u` (nounset). ROS 2 and colcon setup scripts assume many optional variables may be unset.
+
+Use the workspace helper (recommended):
 
 ```bash
-export COLCON_TRACE=
+source ~/ros2_ws/scripts/setup_ros_env.bash
+```
+
+Or disable nounset only for sourcing:
+
+```bash
+set +u
+source /opt/ros/humble/setup.bash
 source install/setup.bash
+set -u
 ```
 
 ## License
