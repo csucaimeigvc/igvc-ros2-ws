@@ -28,9 +28,20 @@ export TURTLEBOT3_MODEL=burger
 ## Clone and build
 
 ```bash
-git clone <YOUR_GITHUB_URL> igvc_ros2_ws
+git clone https://github.com/csucaimeigvc/igvc-ros2-ws.git igvc_ros2_ws
 cd igvc_ros2_ws
+```
 
+If you use SSH and have keys set up with GitHub:
+
+```bash
+git clone git@github.com:csucaimeigvc/igvc-ros2-ws.git igvc_ros2_ws
+cd igvc_ros2_ws
+```
+
+Then install dependencies and build:
+
+```bash
 # One-time: register rosdep rules
 sudo rosdep init   # skip if you already ran this on the machine
 rosdep update
