@@ -80,6 +80,8 @@ ros2 launch igvc_robot turtlebot3_localization.launch.py opencr_port:=/dev/ttyAC
 
 More context: [docs/TURTLEBOT3_OPENCR_SETUP_CHAT_SUMMARY.md](docs/TURTLEBOT3_OPENCR_SETUP_CHAT_SUMMARY.md).
 
+After laptop motor setup, flash on Jetson and plan Nav2 integration: [docs/JETSON_HANDOFF_AND_NAV2.md](docs/JETSON_HANDOFF_AND_NAV2.md).
+
 ## Repository layout
 
 | Path | Role |
